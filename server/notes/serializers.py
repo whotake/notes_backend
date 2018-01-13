@@ -26,4 +26,4 @@ class NoteSerializer(ModelSerializer):
             'uuid',
             'user'
         )
-        read_only_fields = ('created', 'uuid')
+        read_only_fields = ('created', 'uuid', 'user', )

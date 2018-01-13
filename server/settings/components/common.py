@@ -39,9 +39,14 @@ INSTALLED_APPS: Tuple[str, ...] = (
     # Security:
     'axes',
 
-    # Your apps go here:
+    # REST Api:
+    'rest_framework',
+    'django_filters',
+
+    # Project apps:
     'server.main_app',
     'server.notes',
+    'server.api',
 )
 
 MIDDLEWARE: Tuple[str, ...] = (

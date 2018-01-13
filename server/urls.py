@@ -16,9 +16,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from server.main_app import urls as main_urls
-from server.main_app.views import index
-
 admin.autodiscover()
 
 
@@ -27,9 +24,8 @@ urlpatterns = [
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', admin.site.urls),
 
-    # Apps:
-    url(r'^main/', include(main_urls)),
-    url(r'^api/', include('server.notes.urls')),
+    # Project apps:
+    url(r'^api/', include('server.api.urls', namespace='api')),
 
     # Text and xml static files:
     url(r'^robots\.txt$', TemplateView.as_view(
@@ -44,9 +40,6 @@ urlpatterns = [
         template_name='txt/crossdomain.xml',
         content_type='application/xml',
     )),
-
-    # It is a good practice to have explicit index view:
-    url(r'^$', index, name='index'),
 ]
 
 if settings.DEBUG:

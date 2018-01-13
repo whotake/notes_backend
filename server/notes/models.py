@@ -13,7 +13,8 @@ class Category(models.Model):
     )
     description = models.CharField(
         verbose_name='Описание',
-        max_length=180
+        max_length=180,
+        blank=True
     )
 
     def __str__(self):
