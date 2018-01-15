@@ -9,7 +9,7 @@ class CategorySerializer(ModelSerializer):
         fields = (
             'id',
             'name',
-            'description'
+            'description',
         )
 
 
@@ -24,6 +24,6 @@ class NoteSerializer(ModelSerializer):
             'category',
             'is_favourite',
             'uuid',
-            'user'
+            'user',
         )
-        read_only_fields = ('created', 'uuid', 'user', )
+        read_only_fields = ('created', 'uuid', 'user')

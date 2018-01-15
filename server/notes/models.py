@@ -9,12 +9,12 @@ User = get_user_model()
 class Category(models.Model):
     name = models.CharField(
         verbose_name='Название',
-        max_length=100
+        max_length=100,
     )
     description = models.CharField(
         verbose_name='Описание',
         max_length=180,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):
@@ -29,34 +29,34 @@ class Category(models.Model):
 class Note(models.Model):
     title = models.CharField(
         verbose_name='Заголовок',
-        max_length=100
+        max_length=100,
     )
     body = models.TextField(
         verbose_name='Содержимое',
-        max_length=9999
+        max_length=9999,
     )
     created = models.DateTimeField(
         verbose_name='Дата создания',
-        auto_created=True
+        auto_created=True,
     )
     category = models.ForeignKey(
         to=Category,
         verbose_name='Категория',
         blank=True,
-        null=True
+        null=True,
     )
     is_favourite = models.BooleanField(
         verbose_name='В избранном',
-        default=False
+        default=False,
     )
     uuid = models.UUIDField(
         verbose_name='UUID',
         default=uuid.uuid4,
-        editable=False
+        editable=False,
     )
     user = models.ForeignKey(
         to=User,
-        verbose_name='Владелец'
+        verbose_name='Владелец',
     )
 
     def __str__(self):

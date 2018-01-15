@@ -15,12 +15,12 @@ class BaseTestCase(APITestCase):
         self.user_data = {
             'username': 'test',
             'email': 'email@email.com',
-            'password': 'test'
+            'password': 'test',
         }
         self.user = User.objects.create(**self.user_data)
 
     def api_authentication(self):
-        url = reverse('server.api:api-token-auth')
+        url = reverse('server:api-token-auth')
         response = self.client.post(url, self.user_data)
         token = response.content.get('token')
         self.set_api_auth_token(token)

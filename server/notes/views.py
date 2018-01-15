@@ -8,6 +8,7 @@ from rest_framework.mixins import (
 from rest_framework.viewsets import GenericViewSet
 
 from server.notes.permissions import NotePermission
+
 from .models import Category, Note
 from .serializers import CategorySerializer, NoteSerializer
 
@@ -34,19 +35,19 @@ class NoteViewSet(
 ):
     serializer_class = NoteSerializer
     queryset = Note.objects.all()
-    permission_classes = [NotePermission, ]
-    search_fields = ('title', 'body', )
-    filter_fields = ('category', 'is_favourite', 'user', )
+    permission_classes = [NotePermission]
+    search_fields = ('title', 'body')
+    filter_fields = ('category', 'is_favourite', 'user')
 
     def perform_create(self, serializer):
         serializer.save(
-            user=self.request.user
+            user=self.request.user,
         )
 
 
 class PublicNoteViewSet(
     RetrieveModelMixin,
-    GenericViewSet
+    GenericViewSet,
 ):
     serializer_class = NoteSerializer
     queryset = Note.objects.all()

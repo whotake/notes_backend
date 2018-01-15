@@ -2,17 +2,18 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 
-from server.api.tests.base import BaseTestCase
 from server.notes.models import Note
+from server.notes.tests.base import BaseTestCase
 
 User = get_user_model()
 
 
 class NoteListTestCase(BaseTestCase):
-    url = reverse('server.api:note-list')
+    url = reverse('note:note-list')
     queryset = Note.objects.all()
 
     def setUp(self):
+        super(NoteListTestCase, self).setUp()
         self.initial_objects_count = Note.objects.count()
 
     def test_note_get(self):
@@ -24,26 +25,27 @@ class NoteListTestCase(BaseTestCase):
         data = {
             'title': 't',
             'body': '1',
-            'user': self.user.id
+            'user': self.user.id,
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
-            self.initial_objects_count + 1, Note.objects.count()
+            self.initial_objects_count + 1, Note.objects.count(),
         )
 
 
 class NoteDetailTestCase(BaseTestCase):
 
     def setUp(self):
+        super(NoteDetailTestCase, self).setUp()
         data = {
             'title': 't',
             'body': '1',
-            'user': self.user.id
+            'user': self.user.id,
         }
         self.note = Note.objects.create(**data)
-        self.url = reverse('server.api:note-detail', kwargs={
-            'pk': self.note.id
+        self.url = reverse('note:note-detail', kwargs={
+            'pk': self.note.id,
         })
 
     def test_note_get(self):
@@ -54,18 +56,18 @@ class NoteDetailTestCase(BaseTestCase):
         data = {
             'title': '123',
             'body': '123',
-            'is_favourite': True
+            'is_favourite': True,
         }
         response = self.client.put(self.url, data)
         note = Note.objects.get(pk=self.note.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        for key, value in data.items():
+        for key in data.keys():
             self.assertEqual(response.get(key), getattr(note, key))
 
     def test_note_patch(self):
         data = {
-            'title': 'vest'
+            'title': 'vest',
         }
         response = self.client.patch(self.url, data)
         note = Note.objects.get(pk=self.note.id)
@@ -85,16 +87,16 @@ class NoteDetailTestCase(BaseTestCase):
         user_data = {
             'username': 'test',
             'email': 'email@email.com',
-            'password': 'test'
+            'password': 'test',
         }
         new_user = User.objects.create(**user_data)
         new_note = Note.objects.create(
             title='123',
             body='555',
-            user=new_user
+            user=new_user,
         )
-        url = reverse('server.api:note-detail', kwargs={
-            'pk': new_note.id
+        url = reverse('note:note-detail', kwargs={
+            'pk': new_note.id,
         })
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -106,16 +108,16 @@ class NoteReadOnlyFieldsTestCase(BaseTestCase):
         data = {
             'title': 't',
             'body': '1',
-            'user': self.user.id
+            'user': self.user.id,
         }
         self.note = Note.objects.create(**data)
-        self.url = reverse('server.api:note-detail', kwargs={
-            'pk': self.note.id
+        self.url = reverse('note:note-detail', kwargs={
+            'pk': self.note.id,
         })
 
     def test_uuid_field(self):
         data = {
-            'uuid': 12356
+            'uuid': 12356,
         }
         note = Note.objects.get(pk=self.note.id)
         self.client.patch(self.url, data)
@@ -123,7 +125,7 @@ class NoteReadOnlyFieldsTestCase(BaseTestCase):
 
     def test_user_field(self):
         data = {
-            'user': 12356
+            'user': 12356,
         }
         note = Note.objects.get(pk=self.note.id)
         self.client.patch(self.url, data)

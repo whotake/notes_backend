@@ -1,15 +1,16 @@
 from django.urls import reverse
 from rest_framework import status
 
-from server.api.tests.base import BaseTestCase
 from server.notes.models import Category
+from server.notes.tests.base import BaseTestCase
 
 
 class CategoryListTestCase(BaseTestCase):
-    url = reverse('server.api:category-list')
+    url = reverse('note:category-list')
     queryset = Category.objects.all()
 
     def setUp(self):
+        super(CategoryListTestCase, self).setUp()
         self.initial_objects_count = Category.objects.count()
 
     def test_category_get(self):
@@ -25,19 +26,20 @@ class CategoryListTestCase(BaseTestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
-            self.initial_objects_count + 1, Category.objects.count()
+            self.initial_objects_count + 1, Category.objects.count(),
         )
 
 
 class CategoryDetailTestCase(BaseTestCase):
 
     def setUp(self):
+        super(CategoryDetailTestCase, self).setUp()
         category_object_data = {
             'name': 'test',
             'description': 'test',
         }
         self.test_object = Category.objects.create(**category_object_data)
-        self.url = reverse('server.api:category-detail', kwargs={
+        self.url = reverse('note:category-detail', kwargs={
             'pk': self.test_object.id,
         })
 
@@ -54,7 +56,7 @@ class CategoryDetailTestCase(BaseTestCase):
         category = Category.objects.get(pk=self.test_object.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        for key, value in data.items():
+        for key in data.keys():
             self.assertEqual(response.get(key), getattr(category, key))
 
     def test_category_patch(self):
