@@ -1,4 +1,3 @@
-from django.http import Http404
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -6,9 +5,9 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from server.notes.permissions import NotePermission
 from .models import Category, Note
 from .serializers import CategorySerializer, NoteSerializer
 
@@ -35,17 +34,9 @@ class NoteViewSet(
 ):
     serializer_class = NoteSerializer
     queryset = Note.objects.all()
+    permission_classes = [NotePermission, ]
     search_fields = ('title', 'body', )
     filter_fields = ('category', 'is_favourite', 'user', )
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-
-        if instance.user is not request.user:
-            raise Http404
-
-        return Response(serializer.data)
 
     def perform_create(self, serializer):
         serializer.save(
