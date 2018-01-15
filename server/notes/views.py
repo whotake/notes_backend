@@ -1,9 +1,13 @@
 from django.http import Http404
-
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, \
-    RetrieveModelMixin, ListModelMixin, DestroyModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from .models import Category, Note
 from .serializers import CategorySerializer, NoteSerializer

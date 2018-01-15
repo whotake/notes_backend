@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 
-from .base import BaseTestCase
+from server.api.tests.base import BaseTestCase
 from server.notes.models import Category
 
 
@@ -20,7 +20,7 @@ class CategoryListTestCase(BaseTestCase):
     def test_category_create(self):
         data = {
             'name': 't',
-            'description': '1'
+            'description': '1',
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -34,11 +34,11 @@ class CategoryDetailTestCase(BaseTestCase):
     def setUp(self):
         category_object_data = {
             'name': 'test',
-            'description': 'test'
+            'description': 'test',
         }
         self.test_object = Category.objects.create(**category_object_data)
         self.url = reverse('server.api:category-detail', kwargs={
-            'pk': self.test_object.id
+            'pk': self.test_object.id,
         })
 
     def test_category_get(self):
@@ -48,7 +48,7 @@ class CategoryDetailTestCase(BaseTestCase):
     def test_category_put(self):
         data = {
             'name': '123',
-            'description': '123'
+            'description': '123',
         }
         response = self.client.put(self.url, data)
         category = Category.objects.get(pk=self.test_object.id)
@@ -59,7 +59,7 @@ class CategoryDetailTestCase(BaseTestCase):
 
     def test_category_patch(self):
         data = {
-            'name': 'vest'
+            'name': 'vest',
         }
         response = self.client.patch(self.url, data)
         category = Category.objects.get(pk=self.test_object.id)

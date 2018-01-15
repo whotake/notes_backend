@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 
-from .base import BaseTestCase
+from server.api.tests.base import BaseTestCase
 from server.notes.models import Note
 
 User = get_user_model()
