@@ -20,8 +20,8 @@ class BaseTestCase(APITestCase):
         self.user = User.objects.create(**self.user_data)
 
     def api_authentication(self):
-        url = reverse('server:api-token-auth')
-        response = self.client.post(url, self.user_data)
+        url = reverse('users:api-token-auth')
+        response = self.client.post(url, self.user_data, format='json')
         token = response.content.get('token')
         self.set_api_auth_token(token)
 

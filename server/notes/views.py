@@ -5,6 +5,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
+from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import GenericViewSet
 
 from server.notes.permissions import NotePermission
@@ -51,4 +52,5 @@ class PublicNoteViewSet(
 ):
     serializer_class = NoteSerializer
     queryset = Note.objects.all()
+    permission_classes = [AllowAny]
     lookup_field = 'uuid'

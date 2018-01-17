@@ -15,7 +15,6 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
-from rest_framework_jwt.views import obtain_jwt_token
 
 admin.autodiscover()
 
@@ -25,11 +24,9 @@ urlpatterns = [
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', admin.site.urls),
 
-    # JWT:
-    url(r'^api-token-auth', obtain_jwt_token, name='api-token-auth'),
-
     # Project apps:
-    url(r'^api/', include('server.notes.urls', namespace='note')),
+    url(r'^note/', include('server.notes.urls', namespace='note')),
+    url(r'^users/', include('server.users.urls', namespace='users')),
 
     # Text and xml static files:
     url(r'^robots\.txt$', TemplateView.as_view(

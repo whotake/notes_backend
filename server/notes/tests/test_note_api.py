@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from server.notes.models import Note
-from server.notes.tests.base import BaseTestCase
+from server.users.tests.base import BaseTestCase
 
 User = get_user_model()
 

@@ -46,6 +46,7 @@ INSTALLED_APPS: Tuple[str, ...] = (
     # Project apps:
     'server.main_app',
     'server.notes',
+    'server.users',
 )
 
 MIDDLEWARE: Tuple[str, ...] = (
