@@ -1,22 +1,25 @@
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from server.notes.models import Category
-from server.users.tests.base import BaseTestCase
+
+User = get_user_model()
 
 
-class CategoryListTestCase(BaseTestCase):
+class CategoryListTestCase(APITestCase):
     url = reverse('note:category-list')
     queryset = Category.objects.all()
 
     def setUp(self):
-        super(CategoryListTestCase, self).setUp()
+        user = User.objects.create(username='test')
         self.initial_objects_count = Category.objects.count()
+        self.client.force_authenticate(user=user)
 
     def test_category_get(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.count, self.queryset.count())
 
     def test_category_create(self):
         data = {
@@ -30,10 +33,10 @@ class CategoryListTestCase(BaseTestCase):
         )
 
 
-class CategoryDetailTestCase(BaseTestCase):
+class CategoryDetailTestCase(APITestCase):
 
     def setUp(self):
-        super(CategoryDetailTestCase, self).setUp()
+        user = User.objects.create(username='test')
         category_object_data = {
             'name': 'test',
             'description': 'test',
@@ -42,6 +45,7 @@ class CategoryDetailTestCase(BaseTestCase):
         self.url = reverse('note:category-detail', kwargs={
             'pk': self.test_object.id,
         })
+        self.client.force_authenticate(user=user)
 
     def test_category_get(self):
         response = self.client.get(self.url)
@@ -57,7 +61,7 @@ class CategoryDetailTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         for key in data.keys():
-            self.assertEqual(response.get(key), getattr(category, key))
+            self.assertEqual(response.data.get(key), getattr(category, key))
 
     def test_category_patch(self):
         data = {

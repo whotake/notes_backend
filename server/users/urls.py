@@ -1,5 +1,5 @@
-from rest_framework import routers
 from django.conf.urls import url
+from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token
 
 from server.users.views import UserViewSet

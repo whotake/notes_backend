@@ -1,25 +1,25 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from server.notes.models import Note
-from server.users.tests.base import BaseTestCase
 
 User = get_user_model()
 
 
-class NoteListTestCase(BaseTestCase):
+class NoteListTestCase(APITestCase):
     url = reverse('note:note-list')
     queryset = Note.objects.all()
 
     def setUp(self):
-        super(NoteListTestCase, self).setUp()
+        self.user = User.objects.create(username='test')
         self.initial_objects_count = Note.objects.count()
+        self.client.force_authenticate(user=self.user)
 
     def test_note_get(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.count, self.queryset.count())
 
     def test_note_create(self):
         data = {
@@ -34,19 +34,20 @@ class NoteListTestCase(BaseTestCase):
         )
 
 
-class NoteDetailTestCase(BaseTestCase):
+class NoteDetailTestCase(APITestCase):
 
     def setUp(self):
-        super(NoteDetailTestCase, self).setUp()
+        self.user = User.objects.create(username='test')
         data = {
             'title': 't',
             'body': '1',
-            'user': self.user.id,
+            'user': self.user,
         }
         self.note = Note.objects.create(**data)
         self.url = reverse('note:note-detail', kwargs={
             'pk': self.note.id,
         })
+        self.client.force_authenticate(user=self.user)
 
     def test_note_get(self):
         response = self.client.get(self.url)
@@ -63,7 +64,7 @@ class NoteDetailTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         for key in data.keys():
-            self.assertEqual(response.get(key), getattr(note, key))
+            self.assertEqual(response.data.get(key), getattr(note, key))
 
     def test_note_patch(self):
         data = {
@@ -84,36 +85,26 @@ class NoteDetailTestCase(BaseTestCase):
         """
             Test private access to note
         """
-        user_data = {
-            'username': 'test',
-            'email': 'email@email.com',
-            'password': 'test',
-        }
-        new_user = User.objects.create(**user_data)
-        new_note = Note.objects.create(
-            title='123',
-            body='555',
-            user=new_user,
-        )
-        url = reverse('note:note-detail', kwargs={
-            'pk': new_note.id,
-        })
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        another_user = User.objects.create(username='test1')
+        self.client.force_authenticate(user=another_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class NoteReadOnlyFieldsTestCase(BaseTestCase):
+class NoteReadOnlyFieldsTestCase(APITestCase):
 
     def setUp(self):
+        self.user = User.objects.create(username='test')
         data = {
             'title': 't',
             'body': '1',
-            'user': self.user.id,
+            'user': self.user,
         }
         self.note = Note.objects.create(**data)
         self.url = reverse('note:note-detail', kwargs={
             'pk': self.note.id,
         })
+        self.client.force_authenticate(user=self.user)
 
     def test_uuid_field(self):
         data = {

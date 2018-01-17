@@ -37,7 +37,7 @@ class Note(models.Model):
     )
     created = models.DateTimeField(
         verbose_name='Дата создания',
-        auto_created=True,
+        auto_now_add=True,
     )
     category = models.ForeignKey(
         to=Category,

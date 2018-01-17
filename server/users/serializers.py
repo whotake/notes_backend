@@ -8,22 +8,22 @@ User = get_user_model()
 class UserSerializer(ModelSerializer):
     email = EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all())],
     )
     username = CharField(
         max_length=32,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all())],
     )
     password = CharField(
         min_length=6,
         max_length=100,
-        write_only=True
+        write_only=True,
     )
 
     def create(self, validated_data):
         user = User(
             email=validated_data['email'],
-            username=validated_data['username']
+            username=validated_data['username'],
         )
         user.set_password(validated_data['password'])
         user.save()
