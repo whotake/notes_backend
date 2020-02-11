@@ -35,13 +35,13 @@ ipython = "*"
 sphinx = "*"
 sphinx-autodoc-typehints = "*"
 mypy = "*"
-django = "==1.11.8"
+django = "==1.11.28"
 django-querycount = "*"
 
 
 [packages]
 
-django = "==1.11.8"
+django = "==1.11.28"
 django-split-settings = "*"
 django-axes = "*"
 djangorestframework = "*"
